@@ -181,6 +181,7 @@ $phpRoot = dirname( $phpExePath, 1 );
 
 $httpdConfReplacements = [
     'Define SRVROOT "c:/Apache24"' => 'Define SRVROOT "' . windowsToUnixPath( $apacheRoot ) . '"',
+    '#ServerName www.example.com:80' => 'ServerName localhost:80'
 ];
 
 $httpdConfOptionalReplacements = [
