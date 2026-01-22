@@ -192,9 +192,9 @@ $httpdConfOptionalReplacements = [
 $httpdConfAdditions = [
     '',
     '# Integration with PHP 8',
-    'LoadModule php8_module "' . windowsToUnixPath( $phpRoot . '\\php8apache2_4.dll' ) . '"',
+    'LoadModule php_module "' . windowsToUnixPath( $phpRoot . '\\php8apache2_4.dll' ) . '"',
     '',
-    '<IfModule php8_module>',
+    '<IfModule php_module>',
     'AddHandler application/x-httpd-php .php',
     'DirectoryIndex index.php index.html',
     'PHPIniDir "' . windowsToUnixPath( $phpRoot ) . '"',
