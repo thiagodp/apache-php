@@ -266,4 +266,18 @@ if ( ! $ok ) {
         exit( 1 );
     }
 }
-echo 'php.ini ', ( $phpIniExists ? 'updated' : 'created' ), ' successfully: ', $phpIni, PHP_EOL;
+
+$extensionDir = $phpRoot . '\\ext';
+
+$replacements = [
+    ';extension_dir = "ext"' => 'extension_dir="' . $extensionDir . '"'
+];
+
+try {
+    changeTextFile( $phpIni, $replacements, [] );
+    echo 'php.ini ', ( $phpIniExists ? 'updated' : 'created' ), ' successfully: ', $phpIni, PHP_EOL;
+} catch ( Exception $e ) {
+    echo 'php.ini ', ( $phpIniExists ? 'updated' : 'created' ), ', but the "extension_dir" property could not be updated. Please update it manually.', $phpIni, PHP_EOL;
+    exit( 1 );
+}
+
