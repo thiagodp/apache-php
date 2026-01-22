@@ -169,18 +169,18 @@ function searchApplication( $name, $exe ): string {
     return $exePath;
 }
 
-$apachePath = searchApplication( 'Apache', 'httpd' );
-$phpPath = searchApplication( 'PHP', 'php' );
+$apacheExePath = searchApplication( 'Apache', 'httpd' );
+$phpExePath = searchApplication( 'PHP', 'php' );
 
-$apacheRoot = dirname( $apachePath, 2 );
-$phpRoot = dirname( $phpPath, 1 );
+$apacheRoot = dirname( $apacheExePath, 2 );
+$phpRoot = dirname( $phpExePath, 1 );
 
 //
 // httpd.conf
 //
 
 $httpdConfReplacements = [
-    'Define SRVROOT "c:/Apache24"' => 'Define SRVROOT "' . windowsToUnixPath( $apachePath ) . '"',
+    'Define SRVROOT "c:/Apache24"' => 'Define SRVROOT "' . windowsToUnixPath( $apacheRoot ) . '"',
 ];
 
 $httpdConfOptionalReplacements = [
