@@ -133,6 +133,12 @@ function answer( array $options, mixed $defaultOption = null, bool $showOptions 
     return $input;
 }
 
+
+const ANSI_YELLOW   = "\033[33m";
+const ANSI_CLOSE    = "\033[0m";
+
+function highlight( string $text ): string { return ANSI_YELLOW . $text . ANSI_CLOSE; }
+
 // ----------------------------------------------------------------------------
 // MAIN
 // ----------------------------------------------------------------------------
@@ -211,7 +217,7 @@ $ok = copyFileWithAttributes( $httpdConf, $backupFileName );
 echo ( $ok ? 'successful!' : 'error.' ), PHP_EOL;
 
 
-echo 'Do you want to enable some modules (mod_rewrite, mod_headers, mod_ssl) in your httpd.conf (recommended)?', PHP_EOL;
+echo highlight( 'Do you want to enable some modules (mod_rewrite, mod_headers, mod_ssl) in your httpd.conf (recommended)?' ), PHP_EOL;
 $useOptionalModules = strtolower( answer( [ 'y', 'Y', 'n', 'N' ], 'y', true ) ) == 'y';
 
 $hasError = false;
@@ -233,7 +239,7 @@ $phpIni = $phpRoot . '\\php.ini';
 $changeIni = true;
 $phpIniExists = file_exists( $phpIni );
 if ( $phpIniExists ) {
-    echo 'Do you want to change your php.ini with the development configuration (recommended)?', PHP_EOL;
+    echo highlight( 'Do you want to change your php.ini with the development configuration (recommended)?' ), PHP_EOL;
     $changeIni = strtolower( answer( [ 'y', 'Y', 'n', 'N' ], 'y', true ) ) == 'y';
     if ( ! $changeIni ) {
         echo 'Ok, no changes.', PHP_EOL;
