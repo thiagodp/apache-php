@@ -49,10 +49,11 @@ function windowsToUnixPath( string $path ): string {
  * @param string $path
  * @param array<string,string> $replacements
  * @param array<int,string> $additions
+ * @param string $additionCheck Prevent additions if the given value is found in the file. Optional, by default it is empty (do not prevent additions).
  * @throws Exception
  * @return void
  */
-function changeTextFile( string $path, array $replacements, array $additions ): void {
+function changeTextFile( string $path, array $replacements, array $additions, string $additionCheck = '' ): void {
 
     // Read
     $content = file_get_contents( $path );
@@ -66,10 +67,16 @@ function changeTextFile( string $path, array $replacements, array $additions ): 
     }
 
     // Additions
-    $isWindowsEOL = str_contains( $content, "\r\n" );
-    $eol = $isWindowsEOL ? "\r\n" : "\n";
-    foreach ( $additions as $a ) {
-        $content .= $a . $eol;
+    $shouldAdd = true;
+    if ( $additionCheck != '' ) {
+        $shouldAdd = ! str_contains( $content, $additionCheck );
+    }
+    if ( $shouldAdd ) {
+        $isWindowsEOL = str_contains( $content, "\r\n" );
+        $eol = $isWindowsEOL ? "\r\n" : "\n";
+        foreach ( $additions as $a ) {
+            $content .= $a . $eol;
+        }
     }
 
     // Write
@@ -196,9 +203,11 @@ $httpdConfOptionalReplacements = [
     '#LoadModule ssl_module modules/mod_ssl.so' => 'LoadModule ssl_module modules/mod_ssl.so',
 ];
 
+$phpModuleComment = '# Integration with PHP 8';
+
 $httpdConfAdditions = [
     '',
-    '# Integration with PHP 8',
+    $phpModuleComment,
     'LoadModule php_module "' . windowsToUnixPath( $phpRoot . '\\php8apache2_4.dll' ) . '"',
     '',
     '<IfModule php_module>',
@@ -223,7 +232,7 @@ $useOptionalModules = strtolower( answer( [ 'y', 'Y', 'n', 'N' ], 'y', true ) ) 
 $hasError = false;
 try {
     $replacements = $useOptionalModules ? [ ...$httpdConfReplacements, ...$httpdConfOptionalReplacements ] : $httpdConfReplacements;
-    changeTextFile( $httpdConf, $replacements, $httpdConfAdditions );
+    changeTextFile( $httpdConf, $replacements, $httpdConfAdditions, $phpModuleComment );
     echo 'httpd.conf updated successfully.', PHP_EOL;
 } catch ( Exception $e ) {
     $hasError = true;
