@@ -5,6 +5,7 @@
 ; ----------------------------------------------------------
 ; Enabled extensions:
 ; extension=mbstring
+; extension=mysqli
 ; extension=pdo_mysql
 ; extension=pdo_sqlite
 ; extension=openssl
@@ -939,7 +940,7 @@ default_socket_timeout = 60
 ;extension=intl
 ;extension=ldap
 extension=mbstring
-;extension=mysqli
+extension=mysqli
 ;extension=odbc
 extension=openssl
 ;extension=pdo_firebird
