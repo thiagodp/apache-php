@@ -29,6 +29,15 @@ php integrate.php
 
 Or download [integrate.php](integrate.php) and then execute it with PHP: `php integrate.php`
 
+### Silent Mode
+
+💡 If you want to enable the informed Apache modules in `httpd.conf` and to adjust `php.ini` without answering the questions, run `integrate.php` with the `--silent` flag:
+
+```bash
+php integrate.php --silent
+```
+
+
 ## Bonus
 
 The following bash script installs Apache and PHP in `C:\dev` using WinGet and then integrates them. Execute it using `cmd`.

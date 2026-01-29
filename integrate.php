@@ -182,6 +182,8 @@ function searchApplication( $name, $exe ): string {
     return $exePath;
 }
 
+$isSilentInstallation = strtolower( $_SERVER[ 'argv' ][ 1 ] ?? '' ) == '--silent';
+
 $apacheExePath = searchApplication( 'Apache', 'httpd' );
 $phpExePath = searchApplication( 'PHP', 'php' );
 
@@ -225,9 +227,11 @@ echo "Creating a backup of \"{$httpdConf}\"... ";
 $ok = copyFileWithAttributes( $httpdConf, $backupFileName );
 echo ( $ok ? 'successful!' : 'error.' ), PHP_EOL;
 
-
-echo highlight( 'Do you want to enable some modules (mod_rewrite, mod_headers, mod_ssl) in your httpd.conf (recommended)?' ), PHP_EOL;
-$useOptionalModules = strtolower( answer( [ 'y', 'Y', 'n', 'N' ], 'y', true ) ) == 'y';
+$useOptionalModules = true;
+if ( ! $isSilentInstallation ) {
+    echo highlight( 'Do you want to enable some modules (mod_rewrite, mod_headers, mod_ssl) in your httpd.conf (recommended)?' ), PHP_EOL;
+    $useOptionalModules = strtolower( answer( [ 'y', 'Y', 'n', 'N' ], 'y', true ) ) == 'y';
+}
 
 $hasError = false;
 try {
@@ -248,12 +252,16 @@ $phpIni = $phpRoot . '\\php.ini';
 $changeIni = true;
 $phpIniExists = file_exists( $phpIni );
 if ( $phpIniExists ) {
-    echo highlight( 'Do you want to change your php.ini with the development configuration (recommended)?' ), PHP_EOL;
-    $changeIni = strtolower( answer( [ 'y', 'Y', 'n', 'N' ], 'y', true ) ) == 'y';
-    if ( ! $changeIni ) {
-        echo 'Ok, no changes.', PHP_EOL;
-        exit( $hasError ? 1 : 0 );
+
+    if ( ! $isSilentInstallation ) {
+        echo highlight( 'Do you want to change your php.ini with the development configuration (recommended)?' ), PHP_EOL;
+        $changeIni = strtolower( answer( [ 'y', 'Y', 'n', 'N' ], 'y', true ) ) == 'y';
+        if ( ! $changeIni ) {
+            echo 'Ok, no changes.', PHP_EOL;
+            exit( $hasError ? 1 : 0 );
+        }
     }
+
 
     // Backup
     $backupFileName = dirname( $phpIni ) . '\\php-' . date( "Y-m-d_H-i-s" ) . '.ini';
